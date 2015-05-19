@@ -5,8 +5,8 @@ Order 66
 import asyncio
 
 def _initialise(Handlers, bot=None):
-	Handlers.register_admin_command(["order"])
-	Handlers.register_user_command(["iamajedi", "amiajedi", "ajediiam"])
+	Handlers.register_admin_command(["resetjedi"])
+	Handlers.register_user_command(["iamajedi", "amiajedi", "ajediiam", "whoisjedi", "iamsith", "order"])
 	return[]
 
 def iamajedi(bot, event, *args):
@@ -39,16 +39,37 @@ def amiajedi(bot, event, *args):
 			else:
 				bot.send_message_parsed(event.conv, ("<b>{}</b>, you are a Jedi.").format(event.user.full_name))
 
+def iamsith(bot, event, *args):
+	bot.send_message_parsed(event.conv, ("Coming soon..."))
+
+def resetjedi(bot, event, *args):
+	bot.conversation_memory_set(event.conv_id, 'Yoda', None)
+	for u in sorted(event.conv.users, key=lambda x: x.full_name.split()[-1]): 
+		bot.user_memory_set(u.id_.chat_id, 'jedi_status', None)
+
+def whoisjedi(bot, event, *args):
+	yoda = bot.conversation_memory_get(event.conv_id, 'Yoda')
+	html = "The Jedi Temple recognizes"
+	for u in sorted(event.conv.users, key=lambda x: x.full_name.split()[-1]): 
+		jedi_status = bot.user_memory_get(u.id_.chat_id, 'jedi_status')
+		if jedi_status is None:
+		else:
+			if yoda = u.id_.chat_id:
+				html += ("<b>{}</b> is Yoda").format(u.full_name)
+			else:
+				html += ("<b>{}</b> is a Jedi").format(u.full_name)
+	bot.send_html_to_conversation(event.conv, html)
+
 def order(bot, event, orderNumber, *args):
 	if orderNumber == '66':
 		html = "Executing all Jedi<br />"
 		eliminatedCount = 0
+		yoda =  bot.conversation_memory_get(event.conv_id, 'Yoda')
 		for u in sorted(event.conv.users, key=lambda x: x.full_name.split()[-1]): 
-			text = bot.user_memory_get(u.id_.chat_id, 'jedi_status')
-			if not text is None:
+			jedi_status = bot.user_memory_get(u.id_.chat_id, 'jedi_status')
+			if not jedi_status is None:
 				html += ("Clone trooper aims at <b>{}</b><br />").format(u.full_name)
-				text =  bot.conversation_memory_get(event.conv_id, 'Yoda')
-				if text == event.user.id_.chat_id:
+				if yoda == u.id_.chat_id:
 					html += ("<b>{}</b> escapes to Dagobah<br />").format(u.full_name)
 				else:
 					html += ("<b>{}</b> is no longer a Jedi<br />").format(u.full_name)
@@ -71,5 +92,6 @@ def order(bot, event, orderNumber, *args):
 		bot.send_message_parsed(event.conv, ("<b>{}</b> your mind out of the gutter you must get!").format(event.user.full_name)) 
 	else:
 		bot.send_message_parsed(event.conv, ("<b>{}</b> unknown order.").format(event.user.full_name)) 
+
 
 
