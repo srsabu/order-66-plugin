@@ -53,8 +53,9 @@ def whoisjedi(bot, event, *args):
 	for u in sorted(event.conv.users, key=lambda x: x.full_name.split()[-1]): 
 		jedi_status = bot.user_memory_get(u.id_.chat_id, 'jedi_status')
 		if jedi_status is None:
+			""" Nada """
 		else:
-			if yoda = u.id_.chat_id:
+			if yoda == u.id_.chat_id:
 				html += ("<b>{}</b> is Yoda").format(u.full_name)
 			else:
 				html += ("<b>{}</b> is a Jedi").format(u.full_name)
@@ -92,6 +93,5 @@ def order(bot, event, orderNumber, *args):
 		bot.send_message_parsed(event.conv, ("<b>{}</b> your mind out of the gutter you must get!").format(event.user.full_name)) 
 	else:
 		bot.send_message_parsed(event.conv, ("<b>{}</b> unknown order.").format(event.user.full_name)) 
-
 
 
